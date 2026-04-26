@@ -1,0 +1,28 @@
+/* ============================================
+   RANDOM GENERATOR PAGE STYLES
+   ============================================ */
+
+.random-generator {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.random-config {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-lg);
+  align-items: end;
+}
+
+.btn-generate {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05rem;
+  margin-top: var(--space-lg);
+}
+
+@media (max-width: 600px) {
+  .random-config {
+    grid-template-columns: 1fr;
+  }
+}

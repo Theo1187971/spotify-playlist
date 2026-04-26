@@ -1,0 +1,174 @@
+/* ============================================
+   LOGIN PAGE STYLES
+   ============================================ */
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background orbs */
+.login-bg-orbs {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: var(--spotify-green);
+  top: -100px;
+  right: -100px;
+  opacity: 0.15;
+  animation-delay: 0s;
+}
+
+.orb-2 {
+  width: 350px;
+  height: 350px;
+  background: var(--accent-purple);
+  bottom: -80px;
+  left: -80px;
+  opacity: 0.12;
+  animation-delay: -3s;
+  animation-duration: 10s;
+}
+
+.orb-3 {
+  width: 250px;
+  height: 250px;
+  background: var(--accent-blue);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.08;
+  animation-delay: -5s;
+  animation-duration: 12s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -30px) scale(1.05); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(20px, 15px) scale(1.02); }
+}
+
+/* Card */
+.login-card {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-glass);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3xl) var(--space-2xl);
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  animation: slideUp 0.6s ease;
+}
+
+.login-logo {
+  color: var(--spotify-green);
+  margin-bottom: var(--space-lg);
+  filter: drop-shadow(0 0 20px var(--spotify-green-glow));
+}
+
+.login-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: var(--space-sm);
+  letter-spacing: -0.03em;
+}
+
+.login-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: var(--space-xl);
+  line-height: 1.5;
+}
+
+.login-error {
+  padding: var(--space-md);
+  background: var(--error-bg);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: var(--radius-md);
+  color: var(--error);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-lg);
+}
+
+/* CTA Button */
+.btn-spotify-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: 16px 32px;
+  background: var(--spotify-green);
+  color: #000;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-family);
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  margin-bottom: var(--space-2xl);
+}
+
+.btn-spotify-login:hover {
+  background: var(--spotify-green-dark);
+  box-shadow: var(--shadow-glow-green);
+  transform: translateY(-2px);
+}
+
+.btn-spotify-login:active {
+  transform: translateY(0);
+}
+
+/* Features */
+.login-features {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  text-align: left;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  transition: background var(--transition-fast);
+}
+
+.feature:hover {
+  background: var(--bg-card-hover);
+}
+
+.feature-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}

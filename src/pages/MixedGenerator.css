@@ -1,0 +1,47 @@
+/* ============================================
+   MIXED GENERATOR PAGE STYLES
+   ============================================ */
+
+.mixed-generator {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.mixed-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.15);
+  border-radius: var(--radius-md);
+  font-size: 0.83rem;
+  color: var(--accent-blue);
+  line-height: 1.5;
+  margin-bottom: var(--space-lg);
+}
+
+.mixed-info svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.mixed-config {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--space-lg);
+  align-items: end;
+}
+
+.btn-generate-mixed {
+  width: 100%;
+  padding: 16px;
+  font-size: 1.05rem;
+  margin-top: var(--space-lg);
+}
+
+@media (max-width: 600px) {
+  .mixed-config {
+    grid-template-columns: 1fr;
+  }
+}
