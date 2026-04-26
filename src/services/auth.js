@@ -29,18 +29,21 @@ async function generateCodeChallenge(codeVerifier) {
   return base64UrlEncode(hashed);
 }
 
-// --- Token Storage ---
+// --- Helpers ---
+const isDev = import.meta.env.DEV;
+
+// --- Token Storage (sessionStorage — cleared when tab closes) ---
 
 const TOKEN_KEY = 'spotify_token_data';
 
 export function getStoredTokenData() {
   try {
-    const data = localStorage.getItem(TOKEN_KEY);
+    const data = sessionStorage.getItem(TOKEN_KEY);
     if (!data) return null;
     const parsed = JSON.parse(data);
     // Auto-clear if Client ID changed (new Spotify app)
     if (parsed.client_id && parsed.client_id !== CLIENT_ID) {
-      console.warn('[Auth] Client ID changed — clearing old token');
+      if (isDev) console.warn('[Auth] Client ID changed — clearing old token');
       clearTokenData();
       return null;
     }
@@ -58,13 +61,13 @@ export function storeTokenData(data) {
     token_type: data.token_type,
     client_id: CLIENT_ID,
   };
-  localStorage.setItem(TOKEN_KEY, JSON.stringify(tokenData));
+  sessionStorage.setItem(TOKEN_KEY, JSON.stringify(tokenData));
   return tokenData;
 }
 
 export function clearTokenData() {
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem('pkce_code_verifier');
+  sessionStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem('pkce_code_verifier');
 }
 
 export function isTokenExpired() {
@@ -84,8 +87,10 @@ export function getAccessToken() {
 export async function redirectToSpotifyAuth() {
   const codeVerifier = generateRandomString(64);
   const codeChallenge = await generateCodeChallenge(codeVerifier);
+  const state = generateRandomString(32);
 
-  localStorage.setItem('pkce_code_verifier', codeVerifier);
+  sessionStorage.setItem('pkce_code_verifier', codeVerifier);
+  sessionStorage.setItem('oauth_state', state);
 
   const params = new URLSearchParams({
     response_type: 'code',
@@ -94,15 +99,22 @@ export async function redirectToSpotifyAuth() {
     redirect_uri: REDIRECT_URI,
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
+    state,
     show_dialog: 'true',
   });
 
-  console.log('[Auth] Requesting scopes:', SCOPES);
+  if (isDev) console.log('[Auth] Requesting scopes:', SCOPES);
   window.location.href = `${SPOTIFY_AUTH_URL}?${params.toString()}`;
 }
 
+export function verifyOAuthState(stateFromUrl) {
+  const storedState = sessionStorage.getItem('oauth_state');
+  sessionStorage.removeItem('oauth_state');
+  return !!stateFromUrl && stateFromUrl === storedState;
+}
+
 export async function exchangeCodeForToken(code) {
-  const codeVerifier = localStorage.getItem('pkce_code_verifier');
+  const codeVerifier = sessionStorage.getItem('pkce_code_verifier');
 
   if (!codeVerifier) {
     throw new Error('Code verifier not found. Please restart login.');
@@ -126,8 +138,8 @@ export async function exchangeCodeForToken(code) {
   }
 
   const data = await response.json();
-  console.log('[Auth] Token received — scopes granted:', data.scope);
-  localStorage.removeItem('pkce_code_verifier');
+  if (isDev) console.log('[Auth] Token received — scopes granted:', data.scope);
+  sessionStorage.removeItem('pkce_code_verifier');
   return storeTokenData(data);
 }
 

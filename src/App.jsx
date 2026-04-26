@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { verifyOAuthState } from './services/auth';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import RandomGenerator from './pages/RandomGenerator';
@@ -18,14 +19,24 @@ function CallbackHandler() {
 
     const code = searchParams.get('code');
     const error = searchParams.get('error');
+    const state = searchParams.get('state');
 
     if (error) {
       navigate('/', { replace: true });
       return;
     }
 
+    // Verify OAuth state to prevent CSRF attacks
+    if (code && !verifyOAuthState(state)) {
+      console.error('OAuth state mismatch — possible CSRF attack');
+      navigate('/', { replace: true });
+      return;
+    }
+
     if (code) {
       processed.current = true;
+      // Clean authorization code from URL immediately
+      window.history.replaceState({}, '', '/callback');
       handleCallback(code).then(() => {
         navigate('/random', { replace: true });
       });

@@ -4,6 +4,9 @@
 import { SPOTIFY_API_BASE } from '../config';
 import { getAccessToken, refreshAccessToken, isTokenExpired } from './auth';
 
+// --- Helpers ---
+const isDev = import.meta.env.DEV;
+
 // --- Global Rate Limit Guard ---
 // Tracks last Retry-After so ALL requests wait until the cooldown is over
 let blockedUntil = 0;   // timestamp (ms) until which we must not send requests
@@ -21,7 +24,7 @@ async function waitForRateLimit() {
         `Limite Spotify atteinte. Réessayez dans ${Math.ceil(remaining / 1000)} secondes.`
       );
     }
-    console.warn(`[Spotify] Rate-limited — waiting ${Math.ceil(remaining / 1000)}s before next request...`);
+    if (isDev) console.warn(`[Spotify] Rate-limited — waiting ${Math.ceil(remaining / 1000)}s before next request...`);
     await new Promise((r) => setTimeout(r, remaining));
   }
 
@@ -75,7 +78,7 @@ async function spotifyFetch(endpoint, options = {}, retries = 1) {
       );
     }
     // Wait the full Retry-After, then retry this one request
-    console.warn(`[Spotify] 429 received — pausing ${retryAfter}s (Retry-After)`);
+    if (isDev) console.warn(`[Spotify] 429 received — pausing ${retryAfter}s (Retry-After)`);
     await new Promise((r) => setTimeout(r, retryAfter * 1000));
     return spotifyFetch(endpoint, options, retries - 1);
   }
@@ -83,7 +86,7 @@ async function spotifyFetch(endpoint, options = {}, retries = 1) {
   // Non-retryable errors — throw immediately
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-    console.error(`[Spotify] ${response.status} on ${url}`, errorBody);
+    if (isDev) console.error(`[Spotify] ${response.status} on ${url}`, errorBody);
     const message = errorBody.error?.message || `Spotify API error: ${response.status}`;
     throw new Error(message);
   }
