@@ -7,9 +7,9 @@
 // 4. Add http://localhost:5173/callback as a Redirect URI
 // ============================================
 
-export const CLIENT_ID = '0174b19639e44afa8aaaea25031ccf43'; // <-- Remplacez par votre Client ID
+export const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
 
-export const REDIRECT_URI = 'http://127.0.0.1:5173/callback';
+export const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
 export const SCOPES = [
   'user-read-private',
